@@ -1,13 +1,25 @@
-#define VEC_SIZE 1024
-#define BLOCK_SIZE 16
+#include <stdio.h>
+#include <stdlib.h>
+#define VEC_SIZE 8
+#define BLOCK_SIZE 4
 
 __global__ void VecAddKernel(float *, float *, float *);
 
 int main(){
+  int i;
   float *A, *B, *C;
   cudaMallocHost((void**)&A ,sizeof(float)*VEC_SIZE);
   cudaMallocHost((void**)&B ,sizeof(float)*VEC_SIZE);
   cudaMallocHost((void**)&C ,sizeof(float)*VEC_SIZE);
+  //float *A = (float*)malloc(sizeof(float)*VEC_SIZE);
+  //float *B = (float*)malloc(sizeof(float)*VEC_SIZE);
+  //float *C = (float*)malloc(sizeof(float)*VEC_SIZE);
+
+  srand((unsigned int)time(NULL));
+  for(i = 0; i < VEC_SIZE; i++) {
+    A[i] = rand();
+    B[i] = rand();
+  }
 
   float *d_A, *d_B, *d_C;
   cudaMalloc((void**)&d_A, sizeof(float)*VEC_SIZE);
@@ -22,6 +34,10 @@ int main(){
   VecAddKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
 
   cudaMemcpy(C, d_C, sizeof(float)*VEC_SIZE, cudaMemcpyDeviceToHost);
+  
+  for(i = 0; i < VEC_SIZE; i++){
+    printf("%f + %f = %f\n", A[i], B[i], C[i]);
+  }
 
   cudaFree(d_A);
   cudaFree(d_B);

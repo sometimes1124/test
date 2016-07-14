@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+#define MAT_SIZE 32
+
+void MatMult(float *,float *);
+
+int main() {
+  int i;
+  int size = sizeof(float)*MAT_SIZE*MAT_SIZE;
+  double t1, t2;
+  float *A, *B, *C;
+  malloc((void**)&A, size);
+  malloc((void**)&B, size);
+  malloc((void**)&C, size);
+
+  srand((unsigned) time(NULL));
+  for(i = 0; i < MAT_SIZE * MAT_SIZE; i++) {
+    A[i] = rand();
+    B[i] = rand();
+  }
+
+  C = MatMult(A, B);
+  return 0;
+};
+
+void MatMult(float *A, float *B) {
+  int i, j;
+  float *C;
+  malloc((void**)&C, size);
+
+  for(i = 0;i < MAT_SIZE; i++) {
+    for(j = 0; j < MAT_SIZE; j++) {
+      
