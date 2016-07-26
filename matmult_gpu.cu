@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <sys/time.h>
+#include "gettimeofday_sec.c"
 #define MAT_SIZE 32
 #define BLOCK_SIZE 16
-
-double gettimeofday_sec();
 
 __global__ void MatMultKernel(float *, float *, float *);
 
@@ -59,10 +56,4 @@ __global__ void MatMultKernel(float *d_A, float *d_B, float *d_C) {
   for(i = 0; i < MAT_SIZE; i++) {
     d_C[idy*MAT_SIZE+idx] = d_A[idy*MAT_SIZE+i] * d_B[i*MAT_SIZE+idx];
   }
-}
-
-double gettimeofday_sec(){
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec + (double)tv.tv_usec*1e-6;
 }
