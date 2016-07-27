@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "gettimeofday_sec.c"
+#include <time.h>
+#include <sys/time.h>
 #define  WIDTH 1024
 #define  HEIGHT 768
 
 int main() {
-  double t1, t2;
   int i, j, m, n;
   FILE *fp;
 
@@ -19,8 +19,6 @@ int main() {
   }
   fclose(fp);
 
-  t1 = gettimeofday_sec();
-
   //Filtering
   const int w = 3;
   const int sigma1 = 30;
@@ -28,11 +26,11 @@ int main() {
 
   for(i = 0; i < WIDTH; i++) {
     for(j = 0; j < HEIGHT; j++) { 
-     float num = 0;
+      float num = 0;
       float denom = 0;
       for(m = -w; m <= w; m++) {
         for(n = -w; n <= w; n++) { 
-         if(j + n < 0 || j + n >= HEIGHT|| 
+          if(j + n < 0 || j + n >= HEIGHT|| 
              i + m < 0 || i + m >= WIDTH)
             continue;
           float t = im[WIDTH*j + i] - im[WIDTH*(j + n) + (i + m)];
@@ -48,8 +46,6 @@ int main() {
     }
   }
 
-  t2 = gettimeofday_sec();
-
   fp = fopen("out.dat", "w");
   for(i = 0; i < HEIGHT * WIDTH; i++) {
     fprintf(fp, "%d\n", out[i]);
@@ -58,8 +54,6 @@ int main() {
 
   free(im);
   free(out);
-
-  printf("Run Time: %f[s]", t2 - t1);
 
   return 0;
 }

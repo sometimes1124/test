@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define N       64
+#define WIDTH 1024
+#define HEIGHT 768
+
+int main(){
+  int i, j, l, m;
+  FILE *fp;
+
+  int size = (WIDTH - N)*(HEIGHT - N);
+  int *ref = (int*)malloc(sizeof(int)*N*N);
+  int *im  = (int*)malloc(sizeof(int)*size);
+  int *dif = (int*)malloc(sizeof(int)*size);
+
+  fp = fopen("template.dat");
+  for(i = 0; i < N * N; i++) {
+    fscanf(fp, "%d", &ref[i]);
+  }
+  fclose(fp);
+  fp = fopen("image.dat");
+  for(i = 0; i < size; i++) {
+    fscanf(fp, "%d", &im[i]);
+  }
+  flclose(fp);
+  
+  for(i = 0; i < HEIGHT - N; i++) {
+    for(j = 0; j < WIDTH - N; j++) {
+      int tmp = 0;
+      int diff = 0;
+      for(l = 0; l < N; l++) {
+        for(m = 0; m < N; m++) {
+          diff = im[i*HEIGHT+j+l*N+m] - ref[l*N+m];
+          tmp += diff * diff;
+        }
+      }
+      dif[i*HEIGHT+j] = tmp;
+    }
+  }
+  
+  fp = fopen("out.dat","w");
+  for(i = 0; i < size; i++) {
+    fprintf(fp, "%d", dif[i]);
+  }
+  fclose(fp);
+
+  return 0;
+}
