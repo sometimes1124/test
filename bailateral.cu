@@ -22,7 +22,7 @@ int main() {
   int *out = (int*)malloc(size);
 
 
-  fp = fopen("photo.dat", "r");
+  fp = fopen("filter.dat", "r");
   for(i = 0; i < HEIGHT * WIDTH; i++) {
     fscanf(fp, "%d", &im[i]);
     }
@@ -43,7 +43,7 @@ int main() {
   cudaFree(d_im);
   cudaFree(d_out);
 
-  fp = fopen("out.dat", "w");
+  fp = fopen("filter.dat", "w");
   for(i = 0; i < HEIGHT*WIDTH; i++) {
     fprintf(fp, "%d\n", out[i]);
     }
@@ -52,7 +52,7 @@ int main() {
   free(im);
   free(out);
   
-  printf("Run Time: %f[s]", t2 - t1);
+  printf("Run Time: %.3le[s]", t2 - t1);
 
   return 0;
 }

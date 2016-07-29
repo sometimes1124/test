@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 #include "gettimeofday_sec.c"
-#define MAT_SIZE 32
-#define BLOCK_SIZE 16
 
-__global__ void MatMultKernel(float *, float *, float *);
+__global__ void MatMultKernel(float *, float *, int , float *);
 
-int main(){
+
+int main(int argc, char *argv[]){
+  int MAT_SIZE = atoi(argv[1]);
+  int iter = atoi(argv[2]);
+  int BLOCK_SIZE = atoi(argv[3]);
   int i;
   int size = sizeof(float)*MAT_SIZE*MAT_SIZE;
   double t1, t2;
@@ -32,7 +36,9 @@ int main(){
   dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
   dim3 dimGrid(MAT_SIZE/BLOCK_SIZE, MAT_SIZE/BLOCK_SIZE);
   t1 = gettimeofday_sec();
-  MatMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
+  for(i = 0; i < iter; i++){
+    MatMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, MAT_SIZE, d_C);
+  }
   t2 = gettimeofday_sec();
 
   cudaMemcpy(C, d_C, size, cudaMemcpyDeviceToHost);
@@ -44,10 +50,10 @@ int main(){
   cudaFreeHost(A);
   cudaFreeHost(B);
   cudaFreeHost(C);
-  printf("Run Time: %f[s]", t2 - t1);
+  printf("Run Time: %.3le[s]", (t2 - t1)/iter);
 }
 
-__global__ void MatMultKernel(float *d_A, float *d_B, float *d_C) {
+__global__ void MatMultKernel(float *d_A, float *d_B, int MAT_SIZE,float *d_C) {
   int i;
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
   int idy = blockIdx.y * blockDim.y + threadIdx.y;

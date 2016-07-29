@@ -11,9 +11,6 @@ int main(){
   cudaMallocHost((void**)&A ,sizeof(float)*VEC_SIZE);
   cudaMallocHost((void**)&B ,sizeof(float)*VEC_SIZE);
   cudaMallocHost((void**)&C ,sizeof(float)*VEC_SIZE);
-  //float *A = (float*)malloc(sizeof(float)*VEC_SIZE);
-  //float *B = (float*)malloc(sizeof(float)*VEC_SIZE);
-  //float *C = (float*)malloc(sizeof(float)*VEC_SIZE);
 
   srand((unsigned int)time(NULL));
   for(i = 0; i < VEC_SIZE; i++) {
@@ -36,7 +33,7 @@ int main(){
   cudaMemcpy(C, d_C, sizeof(float)*VEC_SIZE, cudaMemcpyDeviceToHost);
   
   for(i = 0; i < VEC_SIZE; i++){
-    printf("%f + %f = %f\n", A[i], B[i], C[i]);
+    printf("%.0f + %.0f = %.0f\n", A[i], B[i], C[i]);
   }
 
   cudaFree(d_A);
